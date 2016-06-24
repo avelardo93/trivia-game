@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)file:///Users/AnthonyVelardo/Documents/RutgersCode/week-6-giphy/week6Giphy.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+	<title>Musician Search</title>
+	<link rel="stylesheet" type="text/css" href="./Musician Search_files/style.css">
+	<link rel="stylesheet" href="./Musician Search_files/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" href="./Musician Search_files/bootstrap.css">
+</head>
+<body>
+
+<div class="container">
+<div class="jumbotron">
+<div background="assets/images/headphones.jpg">
+  <h1>Sport Team Search</h1>
+
+  <div id="buttonsView"></div>
+
+  <form id="music-form">
+    <label for="music-input">Add a Musician</label>
+    <input type="text" id="music-input"><br>
+   
+    <input id="addMusic" type="submit" value="Submit">
+  </form>
+  </div>
+  <div id="musicView">
+	</div>
+  </div>
+  </div>
+
+  
+
+<script src="./Musician Search_files/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript">
+		
+		var musicians = [];
+	    $('.music').on('click', function(){
+	        var state = $(this).attr('data-state'); 
+            if ( state == 'still'){
+                $(this).attr('src', $(this).data('animate'));
+                $(this).attr('data-state', 'animate');
+            }else{
+                $(this).attr('src', $(this).data('still'));
+                $(this).attr('data-state', 'still');
+            }
+	    });
+
+
+	function renderButtons(){ 
+
+		$('#buttonsView').empty();
+		for (var i = 0; i < musicians.length; i++){
+		    var a = $('<button>')
+		    a.addClass('music');
+		    a.attr('data-music', musicians[i]);
+		    a.text(musicians[i]);
+		    $('#buttonsView').append(a);
+
+		}
+	}
+	renderButtons();
+	$('#addMusic').on('click', function(){
+
+		var music = $('#music-input').val().trim();
+		musicians.push(music);
+		$("#music-input").val('');
+		renderButtons();
+		return false;
+	});
+
+	function appendNewButton(music){ 
+	    var a = $('<button>')
+	    a.addClass('music');
+	    a.attr('data-music', music);
+	    a.text(music);
+	    $('#buttonsView').append(a);
+	}
+	$('#addMovie').on('click', function(){
+		var music = $('#music-input').val().trim();
+		musicians.push(music);
+	});
+	function musicGif () {
+		$(".musicDiv").empty();
+        var p = $(this).data('music');
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + p + "&api_key=dc6zaTOxFJmzC&limit=10";
+        console.log(musicians);
+        $.ajax({
+                url: queryURL,
+                method: 'GET'
+            })
+            .done(function(response) {
+                
+
+            console.log(response)
+            console.log(queryURL)
+
+             
+                var results= response.data
+                
+
+                for (var i = 0; i < results.length; i++) {
+
+                    var musicDiv=$("<div class='musicDiv'>");
+                    var rating= results[i].rating;
+                    var p= $("<p>").text("Rating:" + rating);
+                   	var musicImage = $('<img>');
+                    musicImage.attr('src', results[i].images.fixed_height_still.url);
+                    musicImage.attr('data-still', results[i].images.fixed_height_still.url);
+                    musicImage.attr('data-animate', results[i].images.fixed_height.url);
+                    musicImage.attr('data-state', "still");
+                    musicImage.attr('class', "musicImage");
+					
+	function animateClick(){
+		var state = $(this).attr('data-state');
+
+		if (state == 'still'){
+	        $(this).attr('src', $(this).data('animate'));
+	        $(this).attr('data-state', 'animate');
+	    }else{
+	        $(this).attr('src', $(this).data('still'));
+	        $(this).attr('data-state', 'still');
+	    }
+	};
+                    musicDiv.append(p);
+                    musicDiv.append(musicImage)
+
+                    $('#musicView').prepend(musicDiv); 
+                };                   
+              $(document).on('click','.musicImage',animateClick)
+                 });	
+};
+
+$(document).on('click','.music', musicGif);
+
+	</script>
+</body></html>
